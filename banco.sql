@@ -261,8 +261,8 @@ INSERT INTO metrica_alerta (fk_configuracao_maquina, fk_nivel_alerta, limite) VA
     (5, 2, 4.0),    (5, 3, 2.0),     -- RAM Disponível
     (7, 2, 75.0),   (7, 3, 90.0),    -- Disco Uso
     (9, 2, 50.0),   (9, 3, 20.0),    -- Disco Disponível
-    (11, 2, 100.0), (11, 3, 200.0),  -- Rede recebida
-    (12, 2, 100.0), (12, 3, 200.0);  -- Rede enviada
+    (11, 2, 100.0), (11, 3, 50.0),   -- Rede recebida: valores menores são piores
+    (12, 2, 100.0), (12, 3, 50.0);   -- Rede enviada: valores menores são piores
 
 DELIMITER $$
 
