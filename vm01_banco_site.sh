@@ -24,7 +24,7 @@ echo "== Baixando o site =="
 echo "== Criando o .env do site =="
 cat > web-data-viz/.env << 'EOF'
 AMBIENTE_PROCESSO=producao
-APP_PORT=80
+APP_PORT=3333
 APP_HOST=localhost
 DB_HOST=localhost
 DB_DATABASE=MonFire
