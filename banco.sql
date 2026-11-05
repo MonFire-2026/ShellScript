@@ -372,19 +372,48 @@ END$$
 
 DELIMITER ;
 
--- Consulta demonstrativa das capturas usando o catálogo restaurado.
+
+CREATE OR REPLACE VIEW vw_captura_geral AS
 SELECT
-    c.id AS capturaId,
-    maq.nome AS maquina,
-    tc.nome AS componente,
-    mc.nome AS metrica,
+    c.id AS captura_id,
     c.valor,
-    mc.unidade_medida AS unidade,
-    c.dtHr
+    c.dtHr AS data_hora,
+    maq.id AS maquina_id,
+    maq.nome AS maquina_nome,
+    maq.hostname,
+    maq.mac,
+    maq.ip,
+    maq.sistema_operacional,
+    maq.situacao AS maquina_situacao,
+    maq.fk_empresa AS empresa_id,
+    cm.id AS configuracao_id,
+    cm.ativa AS configuracao_ativa,
+    comp.id AS componente_id,
+    comp.status_atividade AS componente_ativo,
+    tc.codigo AS metrica_codigo,
+    tc.nome AS componente_nome,
+    mc.nome AS metrica_nome,
+    mc.unidade_medida,
+    atencao.limite AS limite_atencao,
+    critico.limite AS limite_critico
 FROM captura AS c
 INNER JOIN configuracao_maquina AS cm ON cm.id = c.fk_configuracao_maquina
 INNER JOIN maquina AS maq ON maq.id = cm.fk_maquina
 INNER JOIN componente AS comp ON comp.id = cm.fk_componente
 INNER JOIN tipo_componente AS tc ON tc.id = comp.fk_tipo_componente
 INNER JOIN metrica_componente AS mc ON mc.id = tc.fk_metrica_componente
-ORDER BY c.dtHr;
+LEFT JOIN nivel_alerta AS nivel_atencao
+    ON nivel_atencao.estado = 'Atenção'
+LEFT JOIN metrica_alerta AS atencao
+    ON atencao.fk_configuracao_maquina = cm.id
+    AND atencao.fk_nivel_alerta = nivel_atencao.id
+LEFT JOIN nivel_alerta AS nivel_critico
+    ON nivel_critico.estado = 'Crítico'
+LEFT JOIN metrica_alerta AS critico
+    ON critico.fk_configuracao_maquina = cm.id
+    AND critico.fk_nivel_alerta = nivel_critico.id;
+
+
+SELECT *
+FROM vw_captura_geral
+ORDER BY data_hora;
